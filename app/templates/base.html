@@ -1,0 +1,82 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='b_favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='b_favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+<script src="static/jquery-1.4.2.min.js" type="text/javascript"></script>
+
+<style>
+.max{width:auto;height:auto;}
+.min{width:auto;max-height:120px;}
+</style>
+
+<script>
+    function myfunction(url) {
+    $(document.getElementById(url)).toggleClass('min');
+    $(document.getElementById(url)).toggleClass('max');
+    }
+    function replyfunction(commetname) {
+         $(document.getElementById("body")).focus()
+         $(document.getElementById("body")).val('Reply@'+commetname+':  ')
+    }
+</script>
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+            <ul class="nav navbar-nav">
+                {% if current_user.is_authenticated %}
+                <li><a href="/"><b>Flask</b></a></li>
+                <li><a href="/"><b>Home</b></a></li>
+                <li><a href="{{ url_for('main.feed') }}"><b>Feed</b></a></li>
+                <li><a href="{{ url_for('main.pocket') }}"><b>Pocket</b></a></li>
+                {% else %}
+                <li><a href="/"><b>Flask</b></a></li>
+                <li><a href="{{ url_for('main.feed') }}"><b>Feed</b></a></li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+                    <li><a href="{{ url_for('main.moderate') }}"><b>Moderate Comments</b></a></li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <img src="../../static/客服.jpg" height="18" width="18" >
+                            <b>Me</b> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('main.user', username=current_user.username) }}"><b>Profile</b></a></li>
+                            <li><a href="{{ url_for('auth.logout') }}"><b>Log out</b></a></li>
+                        </ul>
+                    <li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.login') }}"><b>Log In</b></a></li>
+                {% endif %}
+            </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+         <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Flasky - Post{% endblock %}
+
+{% block page_content %}
+{% include '_posts.html' %}
+    <h4 id="comments">Comments</h4>
+{% if current_user.can(Permission.COMMENT) %}
+<div class="comment-form">
+{#    {{ wtf.quick_form(form)}}#}
+    <form class=".form-horizontal" method="POST">
+        <div class="form-group">{{ form.hidden_tag() }}</div>
+        <div>{{ form.nickname.label }}:</div>
+        <div class="form-group"> {{ form.nickname(class="col-xs-2") }}</div>
+        <div><br>{{ form.body.label}}:</div>
+        <div class="form-group">{{ form.body(class="form-control") }}</div>
+        <div class="form-group">{{ form.submit(class="btn btn-info") }}</div>
+    </form>
+</div>
+{% endif %}
+    <ul class="comments">
+    {% for comment in comments %}
+    <li class="comment">
+        <div class="comment-thumbnail">
+            <a href="{{ url_for('.user', username=comment.author.username) }}">
+                {% if comment.author == posts[0].author %}
+                    <img class="img-rounded profile-thumbnail" src="../../static/客服.jpg" height="32" width="32">
+                {% else %}
+                    <img class="img-rounded profile-thumbnail" src="../../static/电话.jpg" height="32" width="32">
+                {% endif %}
+            </a>
+        </div>
+        <div class="post-content">
+            <div class="comment-date">{{ moment(comment.timestamp).fromNow() }}</div>
+            {% if not comment.author_nickname %}
+                 <div class="comment-author">{{ comment.author.username }}</div>
+            {% else %}
+                 <div class="comment-author">{{ comment.author_nickname }}</div>
+            {% endif %}
+            <div class="comment-reply">
+                {% if not comment.author_nickname %}
+                    <p><button id="{{ comment.author.username }}" class="btn btn-primary btn-xs"  onclick="replyfunction(id)">Reply</button></p>
+                {% else %}
+                    <p><button id="{{ comment.author_nickname }}" class="btn btn-primary btn-xs"  onclick="replyfunction(id)">Reply</button></p>
+                {% endif %}
+            </div>
+            <div class="comment-body">
+                {% if comment.disabled %}
+                <p><i>This comment has been disabled by a moderator.</i></p>
+                {% endif %}
+                {% if moderate or not comment.disabled %}
+                        {{ comment.body }}
+                {% endif %}
+            </div>
+
+
+
+            {% if moderate %}
+                <br>
+                {% if comment.disabled %}
+                <a class="btn btn-default btn-xs" href="{{ url_for('.moderate_enable', id=comment.id, page=page) }}">Enable</a>
+                {% else %}
+                <a class="btn btn-danger btn-xs" href="{{ url_for('.moderate_disable', id=comment.id, page=page) }}">Disable</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+
+
+
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../OctBlog博客开源/.idea/OctBlog博客开源.iml" filepath="$PROJECT_DIR$/../OctBlog博客开源/.idea/OctBlog博客开源.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Source_Code_frist_edition/.idea/Source_Code_frist_edition.iml" filepath="$PROJECT_DIR$/../../Source_Code_frist_edition/.idea/Source_Code_frist_edition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/demo_仿万普罗网站.iml" filepath="$PROJECT_DIR$/.idea/demo_仿万普罗网站.iml" />
+    </modules>
+  </component>
+</project>
